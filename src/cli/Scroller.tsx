@@ -1,51 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Box, Text, useInput, measureElement } from "ink";
+import React, { useRef, useState, useEffect } from "react";
 
-import type { Command, Layout, Position } from "./types";
-import { Footer } from "./Footer";
+import { Box, measureElement } from "ink";
+
+import type { Command, Layout } from "./types.js";
+import { Footer } from "./Footer.js";
 
 export interface Props {
-  height?: number;
-  width?: number;
+  height: number;
+  width: number;
+  children: React.ReactNode;
 }
-
-interface HasOnLayout {
-  onLayout(options: {
-    height: number;
-    width: number;
-    layout: any;
-  });
-}
-
-// const Body: React.FC<HasOnLayout> = ({ onLayout, children }) => {
-//   const ref = useRef();
-
-//   useEffect(() => {
-
-//     setTimeout(
-//       () => {
-//         // @ts-ignore
-//         if (!ref?.current?.yogaNode) {
-//           return;
-//         }
-//         // @ts-ignore
-//         const node: Yoga.YogaNode = ref.current.yogaNode;
-
-//         const width = node.getComputedWidth() ?? 0;
-//         const height = node.getComputedHeight() ?? 0;
-//         const layout = node.getComputedLayout();
-
-//         onLayout({ height, width, layout });
-//       },
-//       100
-//     );
-//   }, [onLayout]);
-
-//   // @ts-ignore
-//   return <Box ref={ref} flexGrow={0} flexShrink={0}>
-//     {children}
-//   </Box>;
-// };
 
 export const Scroller: React.FC<Props> = ({
   height,
@@ -69,11 +33,6 @@ export const Scroller: React.FC<Props> = ({
     width: 0
   });
 
-  const [bodyDimensions, setBodyDimensions] = useState({
-    height: 0,
-    width: 0
-  });
-
   const [top, setTop] = useState(0);
   const [left, setLeft] = useState(0);
 
@@ -85,7 +44,7 @@ export const Scroller: React.FC<Props> = ({
         break;
       }
       case "down": {
-        setTop(Math.min(Infinity /* TODO fix */, top + 1));
+        setTop(Math.min(layout.height, top + 1));
         break;
       }
       case "left": {
@@ -93,33 +52,64 @@ export const Scroller: React.FC<Props> = ({
         break;
       }
       case "right": {
-        setLeft(Math.min(Infinity /* TODO fix */, left + 1));
+        setLeft(Math.min(layout.width, left + 1));
         break;
       }
     }
   };
 
-  return <Box
-    // @ts-ignore
-    ref={ref}
-    height={height}
-    width={width}
-    flexDirection="column"
-    borderStyle="round"
-  >
+  return (
     <Box
-      height={layout.height - footerDimensions.height - 2}
-      width={layout.width - 2 /* (for border) */}
-      overflow="hidden"
+      height={height}
+      width={width}
+      flexDirection="column"
+      borderStyle="round"
     >
-      <Box marginTop={-top} marginLeft={-left}>
-        {children}
+      <Box
+        height={layout.height - footerDimensions.height - 2}
+        width={layout.width - 2}
+        flexDirection="column"
+        overflow="hidden"
+      >
+        <Box
+          // @ts-ignore
+          ref={ref}
+          flexShrink={0}
+          flexDirection="column"
+          marginTop={-top}
+          marginLeft={-left}
+        >
+          {children}
+        </Box>
       </Box>
+      <Footer
+        onLayout={setFooterDimensions}
+        onCommand={handleCommand}
+        bodyPosition={{top, left}}
+        />
     </Box>
-    <Footer
-      onLayout={setFooterDimensions}
-      onCommand={handleCommand}
-      bodyPosition={{top, left}}
-      />
-  </Box>;
+  );
+
+  {/* return <Box */}
+  {/*   ref={ref} */}
+  {/*   height={height} */}
+  {/*   width={width} */}
+  {/*   flexDirection="column" */}
+  {/*   borderStyle="round" */}
+  {/* > */}
+  {/*   <Box */}
+  {/*     height={layout.height - footerDimensions.height - 2} */}
+  {/*     width={layout.width - 2 /* (for border) *1/} */}
+  {/*     overflow="hidden" */}
+  {/*   > */}
+  {/*     <Box marginTop={-top} marginLeft={-left}> */}
+  {/*       {children} */}
+  {/*     </Box> */}
+  {/*   </Box> */}
+  {/*   <Footer */}
+  {/*     onLayout={setFooterDimensions} */}
+  {/*     onCommand={handleCommand} */}
+  {/*     bodyPosition={{top, left}} */}
+  {/*     /> */}
+  {/* </Box>; */}
 };

@@ -1,27 +1,20 @@
 import React, { useRef, useEffect } from "react";
-import { Box, Text, Spacer, useInput, measureElement } from "ink";
 import Spinner from "ink-spinner";
+import { Box, Text, Spacer, useInput, measureElement } from "ink";
 
-import type { Command } from "./types";
+import type { Command, HasOnLayout } from "./types.js";
 
-interface HasOnLayout {
-  onLayout(options: {
-    height: number;
-    width: number;
-  });
-}
-
-interface FooterProps extends HasOnLayout {
+export interface Props extends HasOnLayout {
   bodyPosition: {
     top: number;
     left: number;
   };
   onCommand(options: {
     command: Command
-  });
+  }): void;
 }
 
-export const Footer = (props: FooterProps) => {
+export const Footer = (props: Props) => {
   const {
     // bodyLayout,
     bodyPosition: { top, left },

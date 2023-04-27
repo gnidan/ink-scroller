@@ -1,41 +1,35 @@
 {
-  "compilerOptions": {
-    "jsx": "react",
-    "sourceMap": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "lib": ["esnext", "dom"],
-    "skipLibCheck": true,
-    "target": "es6",
-    "moduleResolution": "node",
-    "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
-    "module": "commonjs",
-    "outDir": "./dist",
-    "strictBindCallApply": true,
-    "strictNullChecks": true,
-    "paths": {
-      "@gnd/ink-scroller": ["./src"],
-      "@gnd/ink-scroller/*": ["./src/*"],
-      "test/*": ["./test/*"]
-    },
-    "rootDir": ".",
-    "baseUrl": ".",
-    "types": [
-      "react",
-      "node"
-    ],
-    "plugins": [
-      { "transform": "typescript-transform-paths" },
-      { "transform": "typescript-transform-paths", "afterDeclarations": true }
-    ]
-  },
-  "include": [
-    "src/**/*",
-    "bin/**/*",
-    "test/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+	"compilerOptions": {
+		// Disabled because of https://github.com/Microsoft/TypeScript/issues/29172
+		"outDir": "dist",
+
+		"module": "node16",
+		"moduleResolution": "node16",
+		"moduleDetection": "force",
+		"target": "ES2020", // Node.js 14
+		"lib": [
+			"DOM",
+			"DOM.Iterable",
+			"ES2020"
+		],
+		"allowSyntheticDefaultImports": true, // To provide backwards compatibility, Node.js allows you to import most CommonJS packages with a default import. This flag tells TypeScript that it's okay to use import on CommonJS modules.
+		"resolveJsonModule": false, // ESM doesn't yet support JSON modules.
+		"jsx": "react",
+		"declaration": true,
+		"pretty": true,
+		"newLine": "lf",
+		"stripInternal": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noEmitOnError": true,
+		"useDefineForClassFields": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true
+	}
 }

@@ -18,3 +18,11 @@ export type Position = {
   top: number;
   left: number;
 };
+
+export interface HasOnLayout {
+  onLayout(options: {
+    height: number;
+    width: number;
+    layout: any;
+  }): void;
+}

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-import { start } from "@gnd/ink-scroller/cli";
+import React from "react";
+import {render} from "ink";
+import App from "../src/App.js";
 
-async function main() {
-  await start();
-}
 
-main();
+render(React.createElement(App));
