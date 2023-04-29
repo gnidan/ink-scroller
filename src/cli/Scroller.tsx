@@ -78,6 +78,7 @@ export const Scroller: React.FC<Props> = ({
           flexDirection="column"
           marginTop={-top}
           marginLeft={-left}
+          width={layout.width - 2}
         >
           {children}
         </Box>
