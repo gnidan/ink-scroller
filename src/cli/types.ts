@@ -1,20 +1,15 @@
-export type UpCommand = { type: "up"; };
-export type DownCommand = { type: "down" };
-export type LeftCommand = { type: "left" };
-export type RightCommand = { type: "right" };
+export type Direction =
+  | "up"
+  | "down"
+  | "left"
+  | "right";
 
-export type Command =
-  | UpCommand
-  | DownCommand
-  | LeftCommand
-  | RightCommand;
-
-export type Layout = {
+export interface Area {
   height: number;
   width: number;
 };
 
-export type Position = {
+export interface Position {
   top: number;
   left: number;
 };

@@ -2,12 +2,17 @@ import React from 'react';
 import { Box, Text } from "ink";
 import { loremIpsum } from "lorem-ipsum";
 import { Scroller } from "./cli/Scroller.js";
+import { Footer } from "./cli/Footer.js";
+import { ContextProvider } from "./context.js";
 
 export default function App() {
   return (
-    <Scroller width={80} height={25}>
-      <Paragraphs count={10} />
-    </Scroller>
+    <ContextProvider>
+      <Scroller width={80} height={22}>
+        <Paragraphs count={10} />
+      </Scroller>
+      <Footer />
+    </ContextProvider>
   );
 }
 

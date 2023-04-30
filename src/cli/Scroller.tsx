@@ -1,9 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 
-import { Box, measureElement } from "ink";
+import { Box, useInput, measureElement } from "ink";
 
-import type { Command, Layout } from "./types.js";
-import { Footer } from "./Footer.js";
+import { Context } from "../context.js";
 
 export interface Props {
   height: number;
@@ -16,62 +15,55 @@ export const Scroller: React.FC<Props> = ({
   width,
   children
 }) => {
-  const ref = useRef();
+  const contentRef = useRef(null);
 
-  const [layout, setLayout] = useState<Layout>({
-    height: 0,
-    width: 0
-  });
+  const {
+    contentArea,
+    onLayout,
+
+    contentPosition,
+    controls: {
+      up, down, left, right
+    }
+  } = React.useContext(Context)!;
 
   useEffect(() => {
-    // @ts-ignore
-    setLayout(measureElement(ref.current));
-  }, [])
-
-  const [footerDimensions, setFooterDimensions] = useState({
-    height: 0,
-    width: 0
-  });
-
-  const [position, setPosition] = useState<{ top: number, left: number }>({
-    top: 0,
-    left: 0
-  });
-
-  const handleCommand = (options: { command: Command }) => {
-    const { top, left } = position;
-
-    const { command } = options;
-    switch (command.type) {
-      case "up": {
-        setPosition({
-          top: Math.max(top - 1, 0),
-          left
-        });
-        break;
-      }
-      case "down": {
-        setPosition({
-          top: Math.min(top + 1, layout.height),
-          left
-        });
-        break;
-      }
-      case "left": {
-        setPosition({
-          top,
-          left: Math.max(left -1, 0)
-        });
-        break;
-      }
-      case "right": {
-        setPosition({
-          top,
-          left: Math.min(left + 1, layout.width)
-        });
-        break;
-      }
+    if (!contentRef.current) {
+      return;
     }
+
+    const newContentArea = measureElement(contentRef.current);
+    if (
+      !contentArea ||
+      newContentArea.height !== contentArea.height ||
+      newContentArea.width !== contentArea.width
+    ) {
+      onLayout({
+        boundingArea: {
+          height: height,
+          width: width
+        },
+        contentArea: measureElement(contentRef.current)
+      });
+    }
+  }, [contentRef]);
+
+  useInput((input, key) => {
+    if (input === "k" || key.upArrow) {
+      up();
+    } else if (input === "j" || key.downArrow) {
+      down();
+    } else if (input === "h" || key.leftArrow) {
+      left();
+    } else if (input === "l" || key.rightArrow) {
+      right();
+    }
+  });
+
+
+  const scrollPosition = {
+    top: -contentPosition.top,
+    left: -contentPosition.left
   };
 
   return (
@@ -79,31 +71,23 @@ export const Scroller: React.FC<Props> = ({
       height={height}
       width={width}
       flexDirection="column"
-      borderStyle="round"
     >
       <Box
-        height={layout.height - footerDimensions.height - 2}
-        width={layout.width - 2}
         flexDirection="column"
         overflow="hidden"
       >
         <Box
-          // @ts-ignore
-          ref={ref}
+          ref={contentRef}
           flexShrink={0}
           flexDirection="column"
-          marginTop={-position.top}
-          marginLeft={-position.left}
-          width={layout.width - 2}
+          marginTop={scrollPosition.top}
+          marginLeft={scrollPosition.left}
         >
           {children}
         </Box>
       </Box>
-      <Footer
-        onLayout={setFooterDimensions}
-        onCommand={handleCommand}
-        bodyPosition={position}
-        />
     </Box>
   );
 };
+
+

@@ -1,65 +1,23 @@
-import React, { useRef, useEffect } from "react";
+import React, { useContext } from "react";
 import Spinner from "ink-spinner";
-import { Box, Text, Spacer, useInput, measureElement } from "ink";
+import { Box, Text, Spacer } from "ink";
 
-import type { Command, HasOnLayout } from "./types.js";
 
-export interface Props extends HasOnLayout {
-  bodyPosition: {
-    top: number;
-    left: number;
-  };
-  onCommand(options: {
-    command: Command
-  }): void;
-}
+import { Context } from "../context.js";
 
-export const Footer = (props: Props) => {
-  const {
-    // bodyLayout,
-    bodyPosition: { top, left },
-    onLayout,
-    onCommand
-  } = props;
-
-  const ref = useRef();
-
-  useInput((input, key) => {
-    if (input === "j" || key.downArrow) {
-      onCommand({
-        command: { type: "down" }
-      });
-    } else if (input === "k" || key.upArrow) {
-      onCommand({
-        command: { type: "up" }
-      });
-    } else if (input === "h" || key.leftArrow) {
-      onCommand({
-        command: { type: "left" }
-      });
-    } else if (input === "l" || key.rightArrow) {
-      onCommand({
-        command: { type: "right" }
-      });
-    }
-  });
-
-  useEffect(() => {
-    // @ts-ignore
-    onLayout(measureElement(ref.current));
-  }, [onLayout]);
+export const Footer = () => {
+  const { contentArea, contentPosition } = useContext(Context)!;
 
   return (
-    <Box
-      // @ts-ignore
-      ref={ref}
-      borderStyle="round"
-      flexShrink={0}
-    >
+    <Box borderStyle="round" flexShrink={0} >
       <Spacer />
-      <Text bold>top: <Text color="blue">{top}</Text></Text>
+      <Text bold>top: <Text color="blue">{contentPosition?.top}</Text></Text>
       <Spacer />
-      <Text bold>left: <Text color="blue">{left}</Text></Text>
+      <Text bold>left: <Text color="blue">{contentPosition?.left}</Text></Text>
+      <Spacer />
+      <Text bold>height: <Text color="blue">{contentArea?.height}</Text></Text>
+      <Spacer />
+      <Text bold>width: <Text color="blue">{contentArea?.width}</Text></Text>
       <Spacer />
       <Text color="green">
         <Spinner />{" "}
